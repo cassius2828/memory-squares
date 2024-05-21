@@ -59,13 +59,16 @@ let userArray = [];
 let squaresArray = [];
 let testIndexLength = 0;
 let disableStart = false;
+let countdownInSeconds = 55;
+let intervalID;
 ///////////////////////////
 // * Events and Query Selectors
 ///////////////////////////
 const grid = document.querySelector(".grid-container");
 const squares = document.querySelectorAll(".square");
 const h1 = document.querySelector("h1");
-
+const timerDisplay = document.querySelector("#timer");
+console.log(timerDisplay);
 const startBtn = document.querySelector(".start");
 const nextBtn = document.querySelector(".next");
 const submitBtn = document.querySelector(".submit");
@@ -82,6 +85,7 @@ grid.addEventListener("click", (e) => {
 
 // SUBMIT BTN
 submitBtn.addEventListener("click", (e) => {
+  pauseTimer();
   if (JSON.stringify(userArray) !== JSON.stringify(cpuArray)) {
     h1.innerText = "YOU LOSE";
     h1.style.color = "red";
@@ -115,11 +119,14 @@ resetBtn.addEventListener("click", () => {
   submitBtn.classList.add("hide");
   startBtn.classList.remove("hide");
   nextBtn.setAttribute("disabled", true);
+  countdownInSeconds = 55;
+  renderTimeLeft();
 });
 
 // START BTN
 startBtn.addEventListener("click", (e) => {
   if (disableStart) return;
+  startTimer();
   squares.forEach((item) => squaresArray.push(item));
   //   allows the num type to match the id
   cpuArray.push(randomNumUpTo15().toString());
@@ -134,12 +141,10 @@ startBtn.addEventListener("click", (e) => {
   startBtn.toggleAttribute;
 });
 
-
-
 // NEXT BTN
 nextBtn.addEventListener("click", (e) => {
   nextBtn.toggleAttribute("disabled");
-
+  startTimer();
   h1.innerText = "Do You Remember?";
   h1.style.color = "#f2f2f2";
   userArray = [];
@@ -169,27 +174,23 @@ nextBtn.addEventListener("click", (e) => {
     document.getElementById(cpuArray[idx]).classList.remove("flash")
   );
 
-  
+  ///////////////////////////
+  // * Functions | Nxt Btn
+  ///////////////////////////
 
+  // recursive function to ensure we get a square that has not been used yet
+  function returnNewRandomNum() {
+    let randomNum = randomNumUpTo15().toString();
+    if (cpuArray.includes(randomNum)) {
+      console.log("we cannot use this, it is already here --> ", randomNum);
+      return returnNewRandomNum();
+    } else if (randomNum !== undefined && randomNum < 16) {
+      console.log("is this a corrupt value? -->   ", randomNum);
+      return randomNum;
+    } else return returnNewRandomNum();
+  }
 
-
-///////////////////////////
-// * Functions
-///////////////////////////
-
-// recursive function to ensure we get a square that has not been used yet
-function returnNewRandomNum() {
-  let randomNum = randomNumUpTo15().toString();
-  if (cpuArray.includes(randomNum)) {
-    console.log("we cannot use this, it is already here --> ", randomNum);
-    return returnNewRandomNum();
-  } else if (randomNum !== undefined && randomNum < 16) {
-    console.log("is this a corrupt value? -->   ", randomNum);
-    return randomNum;
-  } else return returnNewRandomNum();
-}
-
-// flash squares for the user to see before making their submission
+  // flash squares for the user to see before making their submission
   function flashSquares() {
     if (testIndexLength <= cpuArray.length) {
       setTimeout(() => {
@@ -213,6 +214,44 @@ function returnNewRandomNum() {
   grid.toggleAttribute("disabled");
 });
 
+// functions
 function randomNumUpTo15() {
   return Math.floor(Math.random() * 16);
+}
+///////////////////////////
+// * TIMER
+///////////////////////////
+function startTimer() {
+  if (intervalID) {
+    clearInterval(intervalID);
+    countdownInSeconds = 55;
+  }
+  intervalID = setInterval(() => {
+    renderTimeLeft();
+    countdownInSeconds--;
+    if (countdownInSeconds < 6) {
+      timerDisplay.style.color = "red";
+    }
+    // ends game if timer runs out
+    if (countdownInSeconds < 0) {
+      clearInterval(intervalID);
+      h1.innerText = "YOU LOSE";
+      h1.style.color = "red";
+      resetBtn.classList.remove("hide");
+      nextBtn.classList.add("hide");
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(intervalID);
+}
+
+// renderTimeLeft -- ensure format is consistent
+function renderTimeLeft() {
+  if (countdownInSeconds > 9) {
+    timerDisplay.innerText = `00:${countdownInSeconds}`;
+  } else {
+    timerDisplay.innerText = `00:0${countdownInSeconds}`;
+  }
 }
