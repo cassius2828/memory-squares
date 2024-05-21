@@ -152,17 +152,17 @@ resetBtn.addEventListener("click", () => {
 });
 
 // START BTN
-startBtn.addEventListener("click", (e) => {
+startBtn.addEventListener("click", async (e) => {
   if (disableStart) return;
   // startTimer();
   // squares.forEach((item) => squaresArray.push(item));
   // //   allows the num type to match the id
-  cpuArray.push(randomNumFollowingGridPathRules().toString());
-
-  document.getElementById(cpuArray[0]).classList.add("flash");
-  setTimeout(() => {
-    document.getElementById(cpuArray[0]).classList.remove("flash");
-  }, 1000);
+  addAllSquares();
+  flashSquares();
+  // document.getElementById(cpuArray[0]).classList.add("flash");
+  // setTimeout(() => {
+  //   document.getElementById(cpuArray[0]).classList.remove("flash");
+  // }, 1000);
   nextBtn.classList.remove("hide");
   submitBtn.classList.remove("hide");
   startBtn.classList.add("hide");
@@ -180,71 +180,6 @@ nextBtn.addEventListener("click", (e) => {
   h1.style.color = "#f2f2f2";
   userArray = [];
 
-  // recursive function to ensure we get a square that has not been used yet
-  let randomNum = returnNewRandomNum();
-  console.log(
-    "This is the accepted verison of randomNum we get -->  ",
-    randomNum
-  );
-
-  cpuArray.push(randomNum);
-  console.log(cpuArray)
-  // resets lights on each new turn
-  // cpuArray.forEach((num, idx) => {
-  //   // this nested set timeout ensures that the last added value to the array
-  //   // gets its flash class removed after 1 second
-  //   // setTimeout(() => {
-  //   //   document.getElementById(cpuArray[idx]).classList.add("flash");
-  //   //   setTimeout(() => {
-  //   //     document.getElementById(cpuArray[idx]).classList.remove("flash");
-  //   //   }, 1000);
-  //   // }, 500);
-  // });
-
-  //////////////////////////////////////////////////////
-  // ASYNC FUNC TO PROGRESSIVELY SHOW SQUARES
-  //////////////////////////////////////////////////////
-  async function flashSquare(squareId, duration) {
-    const square = document.getElementById(squareId);
-    square.classList.add("flash");
-    await delay(duration);
-  }
-  // remove all flash classes after all squares were shown
-  function removeFlash(squareId) {
-    const square = document.getElementById(squareId);
-    square.classList.remove("flash");
-  }
-  async function flashSequence(sequence) {
-    for (let squareId of sequence) {
-      // adds squares asynchronously
-      await flashSquare(squareId, 500);
-    }
-    // removes all squares at the same time
-    for (let squareId of sequence) {
-      removeFlash(squareId);
-    }
-  }
-  // removes all of the flash classes in the elements
-  //  of the array that existed before the last addition
-
-  // flash squares for the user to see before making their submission
-  function flashSquares() {
-    if (testIndexLength <= cpuArray.length) {
-      flashSequence(cpuArray);
-      // setTimeout(() => {
-      //   for (let i = 0; i < testIndexLength; i++) {
-      //     document.getElementById(cpuArray[i]).classList.add("flash");
-      //   }
-      //   setTimeout(() => {
-      //     for (let i = 0; i < testIndexLength; i++) {
-      //       document.getElementById(cpuArray[i]).classList.remove("flash");
-      //     }
-      //   }, 1000);
-      // }, 500);
-    }
-    testIndexLength++;
-  }
-  flashSquares();
   ///////////////////////////
   // * Functions | Nxt Btn
   ///////////////////////////
@@ -269,6 +204,71 @@ nextBtn.addEventListener("click", (e) => {
 });
 
 // functions
+// recursive function to ensure we get a square that has not been used yet
+// let randomNum = returnNewRandomNum();
+// console.log(
+//   "This is the accepted verison of randomNum we get -->  ",
+//   randomNum
+// );
+
+// cpuArray.push(randomNum);
+// console.log(cpuArray);
+// resets lights on each new turn
+// cpuArray.forEach((num, idx) => {
+//   // this nested set timeout ensures that the last added value to the array
+//   // gets its flash class removed after 1 second
+//   // setTimeout(() => {
+//   //   document.getElementById(cpuArray[idx]).classList.add("flash");
+//   //   setTimeout(() => {
+//   //     document.getElementById(cpuArray[idx]).classList.remove("flash");
+//   //   }, 1000);
+//   // }, 500);
+// });
+
+//////////////////////////////////////////////////////
+// ASYNC FUNC TO PROGRESSIVELY SHOW SQUARES
+//////////////////////////////////////////////////////
+async function flashSquare(squareId, duration) {
+  const square = document.getElementById(squareId);
+  square.classList.add("flash");
+  await delay(duration);
+}
+// remove all flash classes after all squares were shown
+function removeFlash(squareId) {
+  const square = document.getElementById(squareId);
+  square.classList.remove("flash");
+}
+async function flashSequence(sequence) {
+  for (let squareId of sequence) {
+    // adds squares asynchronously
+    await flashSquare(squareId, 500);
+  }
+  // removes all squares at the same time
+  for (let squareId of sequence) {
+    removeFlash(squareId);
+  }
+}
+// removes all of the flash classes in the elements
+//  of the array that existed before the last addition
+
+// flash squares for the user to see before making their submission
+function flashSquares() {
+  if (testIndexLength <= cpuArray.length) {
+    flashSequence(cpuArray);
+    // setTimeout(() => {
+    //   for (let i = 0; i < testIndexLength; i++) {
+    //     document.getElementById(cpuArray[i]).classList.add("flash");
+    //   }
+    //   setTimeout(() => {
+    //     for (let i = 0; i < testIndexLength; i++) {
+    //       document.getElementById(cpuArray[i]).classList.remove("flash");
+    //     }
+    //   }, 1000);
+    // }, 500);
+  }
+  testIndexLength++;
+}
+
 function randomNumUpTo15() {
   return Math.floor(Math.random() * 16);
 }
@@ -281,6 +281,7 @@ function randomRow() {
 //////////////////////////////////////////////////////
 function randomNumFollowingGridPathRules() {
   // if this is the first square to be selected, it must be in the first row
+
   if (cpuArray.length === 0) {
     let firstSqr = Math.floor(Math.random() * gridSize);
     currentNum = firstSqr;
@@ -288,7 +289,11 @@ function randomNumFollowingGridPathRules() {
   } else {
     // decidees if we will stay in the current row or go to the next row
     currentNum = chooseRow();
-    return currentNum
+    // ensures we do not get any duplicates in our grid
+    if (cpuArray.includes(currentNum?.toString())) {
+      return randomNumFollowingGridPathRules();
+    }
+    return currentNum;
   }
 }
 ////////////////////////////////////
@@ -354,7 +359,37 @@ function chooseTheNextRow() {
     }
   }
 }
-function chooseSqr() {}
+
+/////////////////////////////////////////////////////////////////////////////////
+// Recursive Func to continuing adding sqrs until the last row has one
+/////////////////////////////////////////////////////////////////////////////////
+let lastRowStart = gridSize * gridSize - gridSize;
+let lastRowStop = gridSize * gridSize - 1;
+
+// gets an array in the desired range
+const arrayRange = (start, stop, step) => {
+  return Array.from(
+    { length: (stop - start) / step + 1 },
+    // to string allows us to compare the value since this will produce numbers
+    (value, index) => (start + index * step).toString()
+  );
+};
+// compares the values in the last row of the grid
+let lastRowComp = arrayRange(lastRowStart, lastRowStop, 1);
+console.log(lastRowComp);
+
+function addAllSquares() {
+  let containsLastRowValue = false;
+  lastRowComp.map((value) => {
+    if (cpuArray.includes(value)) {
+      containsLastRowValue = true;
+    }
+  });
+  if (containsLastRowValue) return;
+  cpuArray.push(randomNumFollowingGridPathRules().toString());
+  console.log(cpuArray);
+  return addAllSquares();
+}
 
 ///////////////////////////
 // * TIMER
