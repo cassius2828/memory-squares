@@ -143,6 +143,9 @@ startBtn.addEventListener("click", (e) => {
 
 // NEXT BTN
 nextBtn.addEventListener("click", (e) => {
+  cpuArray.forEach((num, idx) =>
+    document.getElementById(cpuArray[idx]).classList.remove("flash")
+  );
   nextBtn.toggleAttribute("disabled");
   startTimer();
   h1.innerText = "Do You Remember?";
@@ -155,25 +158,64 @@ nextBtn.addEventListener("click", (e) => {
     "This is the accepted verison of randomNum we get -->  ",
     randomNum
   );
+
   cpuArray.push(randomNum);
   // resets lights on each new turn
-  cpuArray.forEach((num, idx) => {
-    // this nested set timeout ensures that the last added value to the array
-    // gets its flash class removed after 1 second
-    setTimeout(() => {
-      document.getElementById(cpuArray[idx]).classList.add("flash");
-      setTimeout(() => {
-        document.getElementById(cpuArray[idx]).classList.remove("flash");
-      }, 1000);
-    }, 500);
-  });
+  // cpuArray.forEach((num, idx) => {
+  //   // this nested set timeout ensures that the last added value to the array
+  //   // gets its flash class removed after 1 second
+  //   // setTimeout(() => {
+  //   //   document.getElementById(cpuArray[idx]).classList.add("flash");
+  //   //   setTimeout(() => {
+  //   //     document.getElementById(cpuArray[idx]).classList.remove("flash");
+  //   //   }, 1000);
+  //   // }, 500);
+  // });
 
+  //////////////////////////////////////////////////////
+  // ASYNC FUNC TO PROGRESSIVELY SHOW SQUARES
+  //////////////////////////////////////////////////////
+  async function flashSquare(squareId, duration) {
+    const square = document.getElementById(squareId);
+    square.classList.add("flash");
+    await delay(duration);
+  }
+  // remove all flash classes after all squares were shown
+  function removeFlash(squareId) {
+    const square = document.getElementById(squareId);
+    square.classList.remove("flash");
+  }
+  async function flashSequence(sequence) {
+    for (let squareId of sequence) {
+      // adds squares asynchronously
+      await flashSquare(squareId, 500);
+    }
+    // removes all squares at the same time
+    for (let squareId of sequence) {
+      removeFlash(squareId);
+    }
+  }
   // removes all of the flash classes in the elements
   //  of the array that existed before the last addition
-  cpuArray.forEach((num, idx) =>
-    document.getElementById(cpuArray[idx]).classList.remove("flash")
-  );
 
+  // flash squares for the user to see before making their submission
+  function flashSquares() {
+    if (testIndexLength <= cpuArray.length) {
+      flashSequence(cpuArray);
+      // setTimeout(() => {
+      //   for (let i = 0; i < testIndexLength; i++) {
+      //     document.getElementById(cpuArray[i]).classList.add("flash");
+      //   }
+      //   setTimeout(() => {
+      //     for (let i = 0; i < testIndexLength; i++) {
+      //       document.getElementById(cpuArray[i]).classList.remove("flash");
+      //     }
+      //   }, 1000);
+      // }, 500);
+    }
+    testIndexLength++;
+  }
+  flashSquares();
   ///////////////////////////
   // * Functions | Nxt Btn
   ///////////////////////////
@@ -190,23 +232,6 @@ nextBtn.addEventListener("click", (e) => {
     } else return returnNewRandomNum();
   }
 
-  // flash squares for the user to see before making their submission
-  function flashSquares() {
-    if (testIndexLength <= cpuArray.length) {
-      setTimeout(() => {
-        for (let i = 0; i < testIndexLength; i++) {
-          document.getElementById(cpuArray[i]).classList.add("flash");
-        }
-        setTimeout(() => {
-          for (let i = 0; i < testIndexLength; i++) {
-            document.getElementById(cpuArray[i]).classList.remove("flash");
-          }
-        }, 1000);
-      }, 500);
-    }
-    testIndexLength++;
-  }
-  flashSquares();
   console.log(userArray);
   console.log(" ");
   console.log(cpuArray);
@@ -254,4 +279,10 @@ function renderTimeLeft() {
   } else {
     timerDisplay.innerText = `00:0${countdownInSeconds}`;
   }
+}
+
+// handle delays
+// this creates a new promise with a setTimeout of our inputed milliseconds
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
