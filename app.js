@@ -61,6 +61,8 @@ let testIndexLength = 0;
 let disableStart = false;
 let countdownInSeconds = 55;
 let intervalID;
+let gridSize = 4;
+let finalGrid = [];
 ///////////////////////////
 // * Events and Query Selectors
 ///////////////////////////
@@ -73,6 +75,21 @@ const startBtn = document.querySelector(".start");
 const nextBtn = document.querySelector(".next");
 const submitBtn = document.querySelector(".submit");
 const resetBtn = document.querySelector(".reset");
+
+// BUILD THE GRID | this creates a grid based off the grid size
+// specified by each level
+let createdGrid = Array.from(
+  { length: gridSize * gridSize },
+  (value, index) => index
+);
+
+createdGrid.map((sqr, idx) => {
+  sqr = document.createElement("div");
+  sqr.id = idx;
+  sqr.classList.add("square");
+
+  grid.appendChild(sqr);
+});
 
 // ANY GRID BTN
 grid.addEventListener("click", (e) => {
