@@ -9,14 +9,16 @@ let squaresArray = [];
 let testIndexLength = 0;
 let disableStart = false;
 // timer
-let countdownInSeconds = 55;
+let countdownInSeconds = 45;
 let intervalID;
 // grid info
-let gridSize = 4;
+let gridSize = 3;
 let currentNum;
 let finalGrid = [];
 let lastRowStart = gridSize * gridSize - gridSize;
 let lastRowStop = gridSize * gridSize - 1;
+// ending game
+let level = 1;
 ///////////////////////////
 // * QUERY SELECTORS
 ///////////////////////////
@@ -53,15 +55,13 @@ submitBtn.addEventListener("click", (e) => {
     h1.style.color = "red";
     resetBtn.classList.remove("hide");
     nextBtn.classList.add("hide");
-  } else if (
-    cpuArray.length === gridSize * gridSize &&
-    JSON.stringify(userArray) === JSON.stringify(cpuArray)
-  ) {
+  } else if (level > 4) {
     h1.innerText = `You are the Ultimate Winner!!!`;
     h1.style.color = "gold";
   } else {
     h1.innerText = `Level ${cpuArray.length} Passed!`;
     h1.style.color = "green";
+    level++;
   }
   nextBtn.toggleAttribute("disabled");
 });
@@ -77,7 +77,7 @@ startBtn.addEventListener("click", async (e) => {
   if (disableStart) return;
   addAllSquares();
   flashSquares();
-
+  startTimer();
   nextBtn.classList.remove("hide");
   submitBtn.classList.remove("hide");
   startBtn.classList.add("hide");
@@ -138,7 +138,7 @@ function playAgain() {
   startBtn.classList.remove("hide");
   nextBtn.setAttribute("disabled", true);
   // reset countdown
-  countdownInSeconds = 55;
+  countdownInSeconds = 45;
   renderTimeLeft();
   // reset grid
   gridSize = 4;
@@ -155,9 +155,9 @@ function prepareNextLevel() {
   // displays
   h1.innerText = "Do You Remember?";
   h1.style.color = "#f2f2f2";
-  countdownInSeconds = 55;
+  countdownInSeconds = 45;
   renderTimeLeft();
-  startTimer();
+
   // btn
   nextBtn.toggleAttribute("disabled");
   // grid
@@ -167,6 +167,7 @@ function prepareNextLevel() {
   buildTheGrid();
   addAllSquares();
   flashSquares();
+  startTimer();
 }
 //////////////////////////////////////////////////////
 // ASYNC FUNC TO PROGRESSIVELY SHOW SQUARES
@@ -330,7 +331,7 @@ function addAllSquares() {
 function startTimer() {
   if (intervalID) {
     clearInterval(intervalID);
-    countdownInSeconds = 55;
+    countdownInSeconds = 45;
   }
   intervalID = setInterval(() => {
     renderTimeLeft();
