@@ -62,6 +62,7 @@ let disableStart = false;
 let countdownInSeconds = 55;
 let intervalID;
 let gridSize = 4;
+let currentNum;
 let finalGrid = [];
 ///////////////////////////
 // * Events and Query Selectors
@@ -75,6 +76,16 @@ const startBtn = document.querySelector(".start");
 const nextBtn = document.querySelector(".next");
 const submitBtn = document.querySelector(".submit");
 const resetBtn = document.querySelector(".reset");
+
+/*
+HOW I CAN CHOOSE THE CONNECTED SQUARES TO FORM THE PATH PROPERLY
+1. initialize a gris size (gs) var
+2. Choose a random number as the starting num (sn) bw 0 and the gs -1
+3. Set restrictions for the next num to be one of the following
+sn - 1, sn + 1
+sn + gs -1, sn + gs, sn + gs + 1
+4. Last row must be only selected once then that will complete the level
+*/
 
 // BUILD THE GRID | this creates a grid based off the grid size
 // specified by each level
@@ -109,7 +120,7 @@ submitBtn.addEventListener("click", (e) => {
     resetBtn.classList.remove("hide");
     nextBtn.classList.add("hide");
   } else if (
-    cpuArray.length === 16 &&
+    cpuArray.length === gridSize * gridSize &&
     JSON.stringify(userArray) === JSON.stringify(cpuArray)
   ) {
     h1.innerText = `You are the Ultimate Winner!!!`;
@@ -143,10 +154,10 @@ resetBtn.addEventListener("click", () => {
 // START BTN
 startBtn.addEventListener("click", (e) => {
   if (disableStart) return;
-  startTimer();
-  squares.forEach((item) => squaresArray.push(item));
-  //   allows the num type to match the id
-  cpuArray.push(randomNumUpTo15().toString());
+  // startTimer();
+  // squares.forEach((item) => squaresArray.push(item));
+  // //   allows the num type to match the id
+  cpuArray.push(randomNumFollowingGridPathRules().toString());
 
   document.getElementById(cpuArray[0]).classList.add("flash");
   setTimeout(() => {
@@ -177,6 +188,7 @@ nextBtn.addEventListener("click", (e) => {
   );
 
   cpuArray.push(randomNum);
+  console.log(cpuArray)
   // resets lights on each new turn
   // cpuArray.forEach((num, idx) => {
   //   // this nested set timeout ensures that the last added value to the array
@@ -239,11 +251,11 @@ nextBtn.addEventListener("click", (e) => {
 
   // recursive function to ensure we get a square that has not been used yet
   function returnNewRandomNum() {
-    let randomNum = randomNumUpTo15().toString();
+    let randomNum = randomNumFollowingGridPathRules().toString();
     if (cpuArray.includes(randomNum)) {
       console.log("we cannot use this, it is already here --> ", randomNum);
       return returnNewRandomNum();
-    } else if (randomNum !== undefined && randomNum < 16) {
+    } else if (randomNum !== undefined && randomNum < gridSize * gridSize) {
       console.log("is this a corrupt value? -->   ", randomNum);
       return randomNum;
     } else return returnNewRandomNum();
@@ -260,6 +272,90 @@ nextBtn.addEventListener("click", (e) => {
 function randomNumUpTo15() {
   return Math.floor(Math.random() * 16);
 }
+
+function randomRow() {
+  return Math.floor(Math.random() * startingNum);
+}
+//////////////////////////////////////////////////////
+// Follows path guidelines from start to finish
+//////////////////////////////////////////////////////
+function randomNumFollowingGridPathRules() {
+  // if this is the first square to be selected, it must be in the first row
+  if (cpuArray.length === 0) {
+    let firstSqr = Math.floor(Math.random() * gridSize);
+    currentNum = firstSqr;
+    return firstSqr;
+  } else {
+    // decidees if we will stay in the current row or go to the next row
+    currentNum = chooseRow();
+    return currentNum
+  }
+}
+////////////////////////////////////
+// Chose which row | Same or Next
+////////////////////////////////////
+function chooseRow() {
+  let chooseRow = Math.floor(Math.random() * 2);
+  if (chooseRow === 0) {
+    return chooseTheSameRow();
+  } else {
+    return chooseTheNextRow();
+  }
+}
+///////////////////////////
+// Same Row Was Chosen
+///////////////////////////
+function chooseTheSameRow() {
+  // following is the logic for selecting a sqr in the same row
+  let chooseSqr = Math.floor(Math.random() * 2);
+  if (chooseSqr === 0) {
+    if (currentNum % gridSize === 0) {
+      // recall the function if the current sqr is on the far left side and has no option
+      // to follow a path to the left of the current sqr
+      return randomNumFollowingGridPathRules();
+    } else {
+      // select the sqr to the left of the current sqr
+      return currentNum - 1;
+    }
+  } else {
+    // if it is on the far right row then it cannot select the square to the right
+    if (currentNum % gridSize === gridSize - 1) {
+      return randomNumFollowingGridPathRules();
+    } else {
+      // select the sqr to the right of the current sqr
+
+      return currentNum + 1;
+    }
+  }
+}
+///////////////////////////
+// Next Row Was Chosen
+///////////////////////////
+function chooseTheNextRow() {
+  let chooseSqr = Math.floor(Math.random() * 3);
+  if (chooseSqr === 0) {
+    // if it is on the far left row then it cannot select the
+    //  square up 1 & to the left
+    if (currentNum % gridSize === 0) {
+      return chooseTheNextRow();
+    } else {
+      // this option can always be selected
+      return currentNum + gridSize - 1;
+    }
+  } else if (chooseSqr === 1) {
+    return currentNum + gridSize;
+  } else {
+    // if it is on the far right row then it cannot select the
+    //  square up 1 & to the right
+    if (currentNum % gridSize === gridSize - 1) {
+      return chooseTheNextRow();
+    } else {
+      return currentNum + gridSize + 1;
+    }
+  }
+}
+function chooseSqr() {}
+
 ///////////////////////////
 // * TIMER
 ///////////////////////////
