@@ -64,6 +64,8 @@ let intervalID;
 let gridSize = 4;
 let currentNum;
 let finalGrid = [];
+let lastRowStart = gridSize * gridSize - gridSize;
+let lastRowStop = gridSize * gridSize - 1;
 ///////////////////////////
 // * Events and Query Selectors
 ///////////////////////////
@@ -89,19 +91,28 @@ sn + gs -1, sn + gs, sn + gs + 1
 
 // BUILD THE GRID | this creates a grid based off the grid size
 // specified by each level
-let createdGrid = Array.from(
-  { length: gridSize * gridSize },
-  (value, index) => index
-);
 
-createdGrid.map((sqr, idx) => {
-  sqr = document.createElement("div");
-  sqr.id = idx;
-  sqr.classList.add("square");
+function buildTheGrid() {
+  if (grid.children) {
+    grid.innerHTML = "";
+  }
+  // Update CSS grid properties
+  grid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+  grid.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+  let createdGrid = Array.from(
+    { length: gridSize * gridSize },
+    (value, index) => index
+  );
 
-  grid.appendChild(sqr);
-});
+  createdGrid.map((sqr, idx) => {
+    sqr = document.createElement("div");
+    sqr.id = idx;
+    sqr.classList.add("square");
 
+    grid.appendChild(sqr);
+  });
+}
+buildTheGrid();
 // ANY GRID BTN
 grid.addEventListener("click", (e) => {
   if (!cpuArray.length || h1.innerText === "YOU LOSE") return;
@@ -131,11 +142,7 @@ submitBtn.addEventListener("click", (e) => {
   }
   nextBtn.toggleAttribute("disabled");
 });
-
-// RESET BTN
-resetBtn.addEventListener("click", () => {
-  squares.forEach((item) => item.classList.remove("flash"));
-
+function reset() {
   cpuArray = [];
   userArray = [];
   squaresArray = [];
@@ -149,6 +156,12 @@ resetBtn.addEventListener("click", () => {
   nextBtn.setAttribute("disabled", true);
   countdownInSeconds = 55;
   renderTimeLeft();
+}
+// RESET BTN
+resetBtn.addEventListener("click", () => {
+  squares.forEach((item) => item.classList.remove("flash"));
+
+  reset();
 });
 
 // START BTN
@@ -171,30 +184,35 @@ startBtn.addEventListener("click", async (e) => {
 
 // NEXT BTN
 nextBtn.addEventListener("click", (e) => {
-  cpuArray.forEach((num, idx) =>
-    document.getElementById(cpuArray[idx]).classList.remove("flash")
-  );
+  // cpuArray.forEach((num, idx) =>
+  //   document.getElementById(cpuArray[idx]).classList.remove("flash")
+  // );
+  reset();
+
   nextBtn.toggleAttribute("disabled");
   startTimer();
-  h1.innerText = "Do You Remember?";
-  h1.style.color = "#f2f2f2";
-  userArray = [];
 
+  gridSize++;
+  lastRowStart = gridSize * gridSize - gridSize;
+  lastRowStop = gridSize * gridSize - 1;
+  buildTheGrid();
+  addAllSquares();
+  flashSquares();
   ///////////////////////////
   // * Functions | Nxt Btn
   ///////////////////////////
 
   // recursive function to ensure we get a square that has not been used yet
-  function returnNewRandomNum() {
-    let randomNum = randomNumFollowingGridPathRules().toString();
-    if (cpuArray.includes(randomNum)) {
-      console.log("we cannot use this, it is already here --> ", randomNum);
-      return returnNewRandomNum();
-    } else if (randomNum !== undefined && randomNum < gridSize * gridSize) {
-      console.log("is this a corrupt value? -->   ", randomNum);
-      return randomNum;
-    } else return returnNewRandomNum();
-  }
+  // function returnNewRandomNum() {
+  //   let randomNum = randomNumFollowingGridPathRules().toString();
+  //   if (cpuArray.includes(randomNum)) {
+  //     console.log("we cannot use this, it is already here --> ", randomNum);
+  //     return returnNewRandomNum();
+  //   } else if (randomNum !== undefined && randomNum < gridSize * gridSize) {
+  //     console.log("is this a corrupt value? -->   ", randomNum);
+  //     return randomNum;
+  //   } else return returnNewRandomNum();
+  // }
 
   console.log(userArray);
   console.log(" ");
@@ -363,8 +381,6 @@ function chooseTheNextRow() {
 /////////////////////////////////////////////////////////////////////////////////
 // Recursive Func to continuing adding sqrs until the last row has one
 /////////////////////////////////////////////////////////////////////////////////
-let lastRowStart = gridSize * gridSize - gridSize;
-let lastRowStop = gridSize * gridSize - 1;
 
 // gets an array in the desired range
 const arrayRange = (start, stop, step) => {
@@ -375,10 +391,12 @@ const arrayRange = (start, stop, step) => {
   );
 };
 // compares the values in the last row of the grid
-let lastRowComp = arrayRange(lastRowStart, lastRowStop, 1);
+
 console.log(lastRowComp);
 
 function addAllSquares() {
+  // moving this out of the global scopes allows the value of the lastRowComp to reflect with the new grid
+  let lastRowComp = arrayRange(lastRowStart, lastRowStop, 1);
   let containsLastRowValue = false;
   lastRowComp.map((value) => {
     if (cpuArray.includes(value)) {
