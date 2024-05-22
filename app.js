@@ -82,12 +82,17 @@ submitBtn.addEventListener("click", (e) => {
 // RESET BTN
 resetBtn.addEventListener("click", () => {
   squares.forEach((item) => item.classList.remove("flash"));
+ 
   playAgain();
 });
 
 // START BTN
 startBtn.addEventListener("click", async (e) => {
   if (disableStart) return;
+  // reinitialize the grid details so the reset works consistently
+  gridSize = gridSize;
+  lastRowStart = gridSize * gridSize - gridSize;
+  lastRowStop = gridSize * gridSize - 1;
   addAllSquares();
   flashSquares();
   startTimer();
@@ -136,7 +141,7 @@ function buildTheGrid() {
 
 // RESET / PLAY AGAIN
 function playAgain() {
-  // reset vars
+   // reset vars
   // for some reason the cpu array is not getting reset on the play again
   cpuArray = [];
   userArray = [];
