@@ -84,7 +84,7 @@ submitBtn.addEventListener("click", (e) => {
   //   nextBtn.classList.add("hide");
   // }
   else {
-    h1.innerText = `Level ${gridSize - 2} Passed!`;
+    h1.innerText = `Level ${level} Passed!`;
     h1.style.color = "green";
     // audio
     levelPassAudio.play();
@@ -168,7 +168,8 @@ function playAgain() {
   squaresArray = [];
   testIndexLength = 0;
   // reset displays
-  h1.innerText = "";
+    h1.innerText = `Level ${level}`;
+    h1.innerText = "";
   h1.style.color = "#f2f2f2";
   // set btns to proper displays
   nextBtn.classList.add("hide");
@@ -192,7 +193,7 @@ function prepareNextLevel() {
   squaresArray = [];
   testIndexLength = 0;
   // displays
-  h1.innerText = "";
+  h1.innerText = `Level ${level}`;
   h1.style.color = "#f2f2f2";
   countdownInSeconds = 45;
   renderTimeLeft();
