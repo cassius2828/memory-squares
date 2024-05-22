@@ -31,15 +31,45 @@ const grid = document.querySelector(".grid-container");
 const squares = document.querySelectorAll(".square");
 const h1 = document.querySelector("h1");
 const timerDisplay = document.querySelector("#timer");
+const highscoreDisplay = document.getElementById("highscore");
 // btns
 const startBtn = document.querySelector(".start");
 const nextBtn = document.querySelector(".next");
 const submitBtn = document.querySelector(".submit");
 const resetBtn = document.querySelector(".reset");
 
+///////////////////////////
+// * LOCAL STORAGE
+///////////////////////////
+
+function getHighScore() {
+  const highScoreData = localStorage.getItem("highscore");
+  return highScoreData
+    ? JSON.parse(highScoreData)
+    : { score: 0, date: "--/--/----" };
+}
+function setHighScore(newScore) {
+  const highscore = getHighScore();
+  if (newScore > highscore.score) {
+    const newHighScoreData = {
+      score: newScore,
+      date: new Date().toLocaleDateString(),
+    };
+    localStorage.setItem("highscore", JSON.stringify(newHighScoreData));
+  }
+}
+function displayHighScore() {
+  const highscore = getHighScore();
+  highscoreDisplay.innerText = `HighScore: ${highscore.score} Date: ${highscore.date}`;
+}
+
 // initialze the grid
 buildTheGrid();
 // audio instance
+
+document.addEventListener("DOMContentLoaded", (e) => {
+  displayHighScore();
+});
 
 ///////////////////////////
 // * EVENTS
@@ -48,7 +78,7 @@ buildTheGrid();
 grid.addEventListener("click", (e) => {
   if (!cpuArray.length || h1.innerText === "YOU LOSE") return;
   userArray.push(e.target.id);
-  document.getElementById(e.target.id).classList.add("flash");
+  document.getElementById(e.target.id)?.classList.add("flash");
   const gridPressSound = new Audio(gridPressSoundPath);
   gridPressSound.play();
   console.log(userArray);
@@ -91,7 +121,7 @@ submitBtn.addEventListener("click", (e) => {
     document
       .querySelectorAll(".square")
       .forEach((sqr) => sqr.classList.add("winner"));
-
+    setHighScore(level);
     level++;
   }
   nextBtn.toggleAttribute("disabled");
@@ -101,7 +131,7 @@ submitBtn.addEventListener("click", (e) => {
 resetBtn.addEventListener("click", () => {
   squares.forEach((item) => item.classList.remove("flash"));
   // squares.forEach(square => square?.classList.add('loser'));
-
+  displayHighScore();
   playAgain();
 });
 
@@ -167,9 +197,9 @@ function playAgain() {
   userArray = [];
   squaresArray = [];
   testIndexLength = 0;
+  level = 1;
   // reset displays
-    h1.innerText = `Level ${level}`;
-    h1.innerText = "";
+  h1.innerText = `Level ${level}`;
   h1.style.color = "#f2f2f2";
   // set btns to proper displays
   nextBtn.classList.add("hide");

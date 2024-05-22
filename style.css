@@ -39,14 +39,20 @@ body > div {
 }
 
 h1,
-h2 {
+h2,
+#highscore {
   color: #f2f2f2;
 }
-h1 {
+h1,
+#highscore {
   margin-bottom: 3rem;
   font-size: 3rem;
   position: absolute;
   left: 30%;
+}
+
+#highscore {
+  left: 60%;
 }
 h2 {
   margin-bottom: 6rem;
