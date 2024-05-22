@@ -55,6 +55,7 @@ grid.addEventListener("click", (e) => {
 submitBtn.addEventListener("click", (e) => {
   console.log(userArray, " <-- user array");
   pauseTimer();
+  // more consistent way to compare the arrays
   const compareArrays = (a, b) => {
     return a.length === b.length && a.every((el, idx) => el === b[idx]);
   };
@@ -64,6 +65,8 @@ submitBtn.addEventListener("click", (e) => {
     console.log("this was the cpuArray --> ", cpuArray);
     h1.innerText = "YOU LOSE";
     h1.style.color = "red";
+    document.querySelectorAll(".square").forEach(sqr => sqr.classList.add('loser'));
+    console.log(squares, ' these are the sqrs')
     resetBtn.classList.remove("hide");
     nextBtn.classList.add("hide");
   } 
@@ -76,6 +79,8 @@ submitBtn.addEventListener("click", (e) => {
   else {
     h1.innerText = `Level ${gridSize - 2} Passed!`;
     h1.style.color = "green";
+    document.querySelectorAll(".square").forEach(sqr => sqr.classList.add('winner'));
+
     level++;
   }
   nextBtn.toggleAttribute("disabled");
@@ -84,6 +89,7 @@ submitBtn.addEventListener("click", (e) => {
 // RESET BTN
 resetBtn.addEventListener("click", () => {
   squares.forEach((item) => item.classList.remove("flash"));
+  // squares.forEach(square => square?.classList.add('loser')); 
 
   playAgain();
 });
@@ -102,6 +108,9 @@ startBtn.addEventListener("click", async (e) => {
   submitBtn.classList.remove("hide");
   startBtn.classList.add("hide");
   startBtn.toggleAttribute;
+  // squares.forEach(square => square?.classList.remove('loser')); 
+
+
 });
 
 // NEXT BTN
@@ -150,7 +159,7 @@ function playAgain() {
   squaresArray = [];
   testIndexLength = 0;
   // reset displays
-  h1.innerText = "Do You Remember?";
+  h1.innerText = "";
   h1.style.color = "#f2f2f2";
   // set btns to proper displays
   nextBtn.classList.add("hide");
@@ -174,7 +183,7 @@ function prepareNextLevel() {
   squaresArray = [];
   testIndexLength = 0;
   // displays
-  h1.innerText = "Do You Remember?";
+  h1.innerText = "";
   h1.style.color = "#f2f2f2";
   countdownInSeconds = 45;
   renderTimeLeft();
