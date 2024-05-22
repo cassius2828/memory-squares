@@ -125,6 +125,7 @@ submitBtn.addEventListener("click", (e) => {
     level++;
   }
   nextBtn.toggleAttribute("disabled");
+  nextBtn.classList.remove("disabled");
 });
 
 // RESET BTN
@@ -146,6 +147,7 @@ startBtn.addEventListener("click", async (e) => {
   flashSquares();
   startTimer();
   nextBtn.classList.remove("hide");
+  nextBtn.classList.add("disabled");
   submitBtn.classList.remove("hide");
   startBtn.classList.add("hide");
   startBtn.toggleAttribute;
@@ -207,6 +209,7 @@ function playAgain() {
   submitBtn.classList.add("hide");
   startBtn.classList.remove("hide");
   nextBtn.setAttribute("disabled", true);
+  nextBtn.classList.add("disabled");
   // reset countdown
   countdownInSeconds = 45;
   renderTimeLeft();
@@ -230,6 +233,7 @@ function prepareNextLevel() {
 
   // btn
   nextBtn.toggleAttribute("disabled");
+  nextBtn.classList.add("disabled");
   // grid
   gridSize++;
   lastRowStart = gridSize * gridSize - gridSize;
