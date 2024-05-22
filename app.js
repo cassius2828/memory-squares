@@ -66,13 +66,15 @@ submitBtn.addEventListener("click", (e) => {
     h1.style.color = "red";
     resetBtn.classList.remove("hide");
     nextBtn.classList.add("hide");
-  } else if (level > 4) {
-    h1.innerText = `You are the Ultimate Winner!!!`;
-    h1.style.color = "gold";
-    resetBtn.classList.remove("hide");
-    nextBtn.classList.add("hide");
-  } else {
-    h1.innerText = `Level ${cpuArray.length} Passed!`;
+  } 
+  // else if (level > 4) {
+  //   h1.innerText = `You are the Ultimate Winner!!!`;
+  //   h1.style.color = "gold";
+  //   resetBtn.classList.remove("hide");
+  //   nextBtn.classList.add("hide");
+  // } 
+  else {
+    h1.innerText = `Level ${gridSize - 2} Passed!`;
     h1.style.color = "green";
     level++;
   }
@@ -82,7 +84,7 @@ submitBtn.addEventListener("click", (e) => {
 // RESET BTN
 resetBtn.addEventListener("click", () => {
   squares.forEach((item) => item.classList.remove("flash"));
- 
+
   playAgain();
 });
 
@@ -141,7 +143,7 @@ function buildTheGrid() {
 
 // RESET / PLAY AGAIN
 function playAgain() {
-   // reset vars
+  // reset vars
   // for some reason the cpu array is not getting reset on the play again
   cpuArray = [];
   userArray = [];
