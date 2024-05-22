@@ -19,8 +19,11 @@ let lastRowStart = gridSize * gridSize - gridSize;
 let lastRowStop = gridSize * gridSize - 1;
 const gridPressSoundPath = "/audio/grid-press.wav";
 const gridFlashSoundPath = "/audio/grid-flash.wav";
+const levelPassAudio = new Audio("/audio/level-pass-audio.mp3");
+const gameoverAudio = new Audio("/audio/game-over-buzzer.wav");
 // ending game
 let level = 1;
+
 ///////////////////////////
 // * QUERY SELECTORS
 ///////////////////////////
@@ -65,21 +68,29 @@ submitBtn.addEventListener("click", (e) => {
     console.log("this was the cpuArray --> ", cpuArray);
     h1.innerText = "YOU LOSE";
     h1.style.color = "red";
-    document.querySelectorAll(".square").forEach(sqr => sqr.classList.add('loser'));
-    console.log(squares, ' these are the sqrs')
+    // audio
+    gameoverAudio.play();
+    document
+      .querySelectorAll(".square")
+      .forEach((sqr) => sqr.classList.add("loser"));
+    console.log(squares, " these are the sqrs");
     resetBtn.classList.remove("hide");
     nextBtn.classList.add("hide");
-  } 
+  }
   // else if (level > 4) {
   //   h1.innerText = `You are the Ultimate Winner!!!`;
   //   h1.style.color = "gold";
   //   resetBtn.classList.remove("hide");
   //   nextBtn.classList.add("hide");
-  // } 
+  // }
   else {
     h1.innerText = `Level ${gridSize - 2} Passed!`;
     h1.style.color = "green";
-    document.querySelectorAll(".square").forEach(sqr => sqr.classList.add('winner'));
+    // audio
+    levelPassAudio.play();
+    document
+      .querySelectorAll(".square")
+      .forEach((sqr) => sqr.classList.add("winner"));
 
     level++;
   }
@@ -89,7 +100,7 @@ submitBtn.addEventListener("click", (e) => {
 // RESET BTN
 resetBtn.addEventListener("click", () => {
   squares.forEach((item) => item.classList.remove("flash"));
-  // squares.forEach(square => square?.classList.add('loser')); 
+  // squares.forEach(square => square?.classList.add('loser'));
 
   playAgain();
 });
@@ -108,9 +119,7 @@ startBtn.addEventListener("click", async (e) => {
   submitBtn.classList.remove("hide");
   startBtn.classList.add("hide");
   startBtn.toggleAttribute;
-  // squares.forEach(square => square?.classList.remove('loser')); 
-
-
+  // squares.forEach(square => square?.classList.remove('loser'));
 });
 
 // NEXT BTN
