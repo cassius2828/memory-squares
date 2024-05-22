@@ -32,13 +32,14 @@ body > div {
 
 h1,
 h2 {
-  margin-bottom: 3rem;
   color: #f2f2f2;
 }
 h1 {
+  margin-bottom: 3rem;
   font-size: 3rem;
 }
 h2 {
+  margin-bottom: 6rem;
   font-size: 2.5rem;
 }
 /* /////////////////////////// */
@@ -48,25 +49,40 @@ h2 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: 8px;
+  gap: 2px;
   width: 50vw;
   height: 50vw;
+  max-width: 50rem;
+  max-height: 50rem;
   margin: auto;
+  outline: 5rem solid orange;
 }
 
 .square {
-  background-color: #6c6c6c;
+  position: relative;
+  background-color: #4a18e0;
   cursor: pointer;
+
   /* outline: solid 2px rgb(201, 64, 190); */
 }
-
+.square::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  content: "";
+  height: 6px;
+  width: 6px;
+  background-color: black;
+  border-radius: 50%;
+}
 /* /////////////////////////// */
 /* Buttons */
 /* /////////////////////////// */
 .btn {
-  margin-top: 3rem;
-
+  margin-top: 8rem;
   padding: 0.5rem 2rem;
+  cursor: pointer;
 }
 
 .hide {

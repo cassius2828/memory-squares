@@ -17,6 +17,8 @@ let currentNum;
 let finalGrid = [];
 let lastRowStart = gridSize * gridSize - gridSize;
 let lastRowStop = gridSize * gridSize - 1;
+const gridPressSoundPath = "/audio/grid-press.wav";
+const gridFlashSoundPath = "/audio/grid-flash.wav";
 // ending game
 let level = 1;
 ///////////////////////////
@@ -34,6 +36,7 @@ const resetBtn = document.querySelector(".reset");
 
 // initialze the grid
 buildTheGrid();
+// audio instance
 
 ///////////////////////////
 // * EVENTS
@@ -43,6 +46,8 @@ grid.addEventListener("click", (e) => {
   if (!cpuArray.length || h1.innerText === "YOU LOSE") return;
   userArray.push(e.target.id);
   document.getElementById(e.target.id).classList.add("flash");
+  const gridPressSound = new Audio(gridPressSoundPath);
+  gridPressSound.play();
   console.log(userArray);
 });
 
@@ -50,7 +55,13 @@ grid.addEventListener("click", (e) => {
 submitBtn.addEventListener("click", (e) => {
   console.log(userArray, " <-- user array");
   pauseTimer();
-  if (JSON.stringify(userArray) !== JSON.stringify(cpuArray)) {
+  const compareArrays = (a, b) => {
+    return a.length === b.length && a.every((el, idx) => el === b[idx]);
+  };
+
+  if (!compareArrays(userArray, cpuArray)) {
+    console.log("this was the userArray --> ", userArray);
+    console.log("this was the cpuArray --> ", cpuArray);
     h1.innerText = "YOU LOSE";
     h1.style.color = "red";
     resetBtn.classList.remove("hide");
@@ -58,6 +69,8 @@ submitBtn.addEventListener("click", (e) => {
   } else if (level > 4) {
     h1.innerText = `You are the Ultimate Winner!!!`;
     h1.style.color = "gold";
+    resetBtn.classList.remove("hide");
+    nextBtn.classList.add("hide");
   } else {
     h1.innerText = `Level ${cpuArray.length} Passed!`;
     h1.style.color = "green";
@@ -124,6 +137,7 @@ function buildTheGrid() {
 // RESET / PLAY AGAIN
 function playAgain() {
   // reset vars
+  // for some reason the cpu array is not getting reset on the play again
   cpuArray = [];
   userArray = [];
   squaresArray = [];
@@ -141,7 +155,7 @@ function playAgain() {
   countdownInSeconds = 45;
   renderTimeLeft();
   // reset grid
-  gridSize = 4;
+  gridSize = 3;
   buildTheGrid();
 }
 
@@ -185,6 +199,8 @@ function removeFlash(squareId) {
 async function flashSequence(sequence) {
   for (let squareId of sequence) {
     // adds squares asynchronously
+    const gridFlashSound = new Audio(gridFlashSoundPath);
+    gridFlashSound.play();
     await flashSquare(squareId, 500);
   }
   // removes all squares at the same time
@@ -199,10 +215,6 @@ function flashSquares() {
     flashSequence(cpuArray);
   }
   testIndexLength++;
-}
-
-function randomNumUpTo15() {
-  return Math.floor(Math.random() * 16);
 }
 
 function randomRow() {
@@ -319,7 +331,7 @@ function addAllSquares() {
   });
   if (containsLastRowValue) return;
   cpuArray.push(randomNumFollowingGridPathRules().toString());
-  console.log(cpuArray);
+  console.log("Updated cpuArray: --> ", cpuArray);
   return addAllSquares();
 }
 
