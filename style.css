@@ -74,8 +74,8 @@ h2 {
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);
   gap: 2px;
-  width: 50vw;
-  height: 50vw;
+  width: 70vw;
+  height: 70vw;
   max-width: 40rem;
   max-height: 40rem;
   margin: auto;
@@ -193,6 +193,10 @@ h2 {
   .grid-container {
     outline: 5rem solid rgb(222, 146, 5);
     box-shadow: 0px 0px 40px 52px rgba(0, 0, 0, 0.75);
+    width: 50vw;
+  height: 50vw;
+  max-width: 40rem;
+  max-height: 40rem;
   }
 }
 
