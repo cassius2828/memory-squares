@@ -80,6 +80,8 @@ document.addEventListener("DOMContentLoaded", (e) => {
 // ANY GRID BTN
 grid.addEventListener("click", (e) => {
   if (!cpuArray.length || h1.innerText === "YOU LOSE") return;
+  // prevents duplicate sqrs in user array
+  if (userArray.includes(e.target.id)) return;
   userArray.push(e.target.id);
   document.getElementById(e.target.id)?.classList.add("flash");
   const gridPressSound = new Audio(gridPressSoundPath);
