@@ -262,7 +262,6 @@ async function flashSquare(squareId, duration) {
   // sets amount of flashedsqrs before clearing flash so we can control the 
   // selection of the userarry till after the squares finished
   amountOfFlashedSquares = cpuFinishedFlashing().length;
-  console.log(amountOfFlashedSquares);
 }
 // remove all flash classes after all squares were shown
 function removeFlash(squareId) {
