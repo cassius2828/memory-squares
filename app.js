@@ -24,8 +24,6 @@ const gridFlashSoundPath = "public/audio/grid-flash.wav";
 const levelPassAudio = new Audio("public/audio/level-pass-audio.mp3");
 const gameoverAudio = new Audio("public/audio/game-over-buzzer.wav");
 
-
-
 // ending game
 let level = 1;
 
@@ -117,6 +115,9 @@ submitBtn.addEventListener("click", (e) => {
     setHighScore(level);
     level++;
   }
+
+  submitBtn.toggleAttribute("disabled");
+  submitBtn.classList.add("disabled");
   nextBtn.toggleAttribute("disabled");
   nextBtn.classList.remove("disabled");
 });
@@ -148,7 +149,8 @@ startBtn.addEventListener("click", async (e) => {
 // NEXT BTN
 nextBtn.addEventListener("click", (e) => {
   prepareNextLevel();
-
+  submitBtn.toggleAttribute("disabled");
+  submitBtn.classList.remove("disabled");
   grid.toggleAttribute("disabled");
 });
 
