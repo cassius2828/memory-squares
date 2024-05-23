@@ -191,10 +191,12 @@ function playAgain() {
   // reset displays
   h1.innerText = `Level ${level}`;
   h1.style.color = "#f2f2f2";
-  // set btns to proper displays
+  // set btns to proper displaysF
   nextBtn.classList.add("hide");
   resetBtn.classList.add("hide");
   submitBtn.classList.add("hide");
+  submitBtn.toggleAttribute("disabled");
+  submitBtn.classList.remove("disabled");
   startBtn.classList.remove("hide");
   nextBtn.setAttribute("disabled", true);
   nextBtn.classList.add("disabled");
