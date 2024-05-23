@@ -17,6 +17,7 @@ let currentNum;
 let finalGrid = [];
 let lastRowStart = gridSize * gridSize - gridSize;
 let lastRowStop = gridSize * gridSize - 1;
+// audio vars
 const gridPressSoundPath = "/audio/grid-press.wav";
 const gridFlashSoundPath = "/audio/grid-flash.wav";
 const levelPassAudio = new Audio("/audio/level-pass-audio.mp3");
@@ -65,8 +66,8 @@ function displayHighScore() {
 
 // initialze the grid
 buildTheGrid();
-// audio instance
 
+// display high score on mount
 document.addEventListener("DOMContentLoaded", (e) => {
   displayHighScore();
 });
@@ -106,14 +107,7 @@ submitBtn.addEventListener("click", (e) => {
     console.log(squares, " these are the sqrs");
     resetBtn.classList.remove("hide");
     nextBtn.classList.add("hide");
-  }
-  // else if (level > 4) {
-  //   h1.innerText = `You are the Ultimate Winner!!!`;
-  //   h1.style.color = "gold";
-  //   resetBtn.classList.remove("hide");
-  //   nextBtn.classList.add("hide");
-  // }
-  else {
+  } else {
     h1.innerText = `Level ${level} Passed!`;
     h1.style.color = "green";
     // audio
@@ -131,7 +125,6 @@ submitBtn.addEventListener("click", (e) => {
 // RESET BTN
 resetBtn.addEventListener("click", () => {
   squares.forEach((item) => item.classList.remove("flash"));
-  // squares.forEach(square => square?.classList.add('loser'));
   displayHighScore();
   playAgain();
 });
@@ -151,7 +144,6 @@ startBtn.addEventListener("click", async (e) => {
   submitBtn.classList.remove("hide");
   startBtn.classList.add("hide");
   startBtn.toggleAttribute;
-  // squares.forEach(square => square?.classList.remove('loser'));
 });
 
 // NEXT BTN
@@ -194,7 +186,6 @@ function buildTheGrid() {
 // RESET / PLAY AGAIN
 function playAgain() {
   // reset vars
-  // for some reason the cpu array is not getting reset on the play again
   cpuArray = [];
   userArray = [];
   squaresArray = [];
@@ -286,7 +277,6 @@ function randomRow() {
 //////////////////////////////////////////////////////
 function randomNumFollowingGridPathRules() {
   // if this is the first square to be selected, it must be in the first row
-
   if (cpuArray.length === 0) {
     let firstSqr = Math.floor(Math.random() * gridSize);
     currentNum = firstSqr;
@@ -333,7 +323,6 @@ function chooseTheSameRow() {
       return randomNumFollowingGridPathRules();
     } else {
       // select the sqr to the right of the current sqr
-
       return currentNum + 1;
     }
   }
@@ -440,13 +429,3 @@ function renderTimeLeft() {
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
-/*
-HOW I CAN CHOOSE THE CONNECTED SQUARES TO FORM THE PATH PROPERLY
-1. initialize a gris size (gs) var
-2. Choose a random number as the starting num (sn) bw 0 and the gs -1
-3. Set restrictions for the next num to be one of the following
-sn - 1, sn + 1
-sn + gs -1, sn + gs, sn + gs + 1
-4. Last row must be only selected once then that will complete the level
-*/
