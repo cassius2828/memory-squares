@@ -17,6 +17,9 @@ let currentNum;
 let finalGrid = [];
 let lastRowStart = gridSize * gridSize - gridSize;
 let lastRowStop = gridSize * gridSize - 1;
+// this checks to see if all the squares in the cpu array have finished flashing before
+// we can select a sqr
+let amountOfFlashedSquares;
 // audio vars
 // audio vars
 const gridPressSoundPath = "public/audio/grid-press.wav";
@@ -79,9 +82,11 @@ document.addEventListener("DOMContentLoaded", (e) => {
 ///////////////////////////
 // ANY GRID BTN
 grid.addEventListener("click", (e) => {
+  if (amountOfFlashedSquares !== cpuArray.length) return;
   if (!cpuArray.length || h1.innerText === "YOU LOSE") return;
   // prevents duplicate sqrs in user array
   if (userArray.includes(e.target.id)) return;
+
   userArray.push(e.target.id);
   document.getElementById(e.target.id)?.classList.add("flash");
   const gridPressSound = new Audio(gridPressSoundPath);
@@ -210,6 +215,18 @@ function playAgain() {
   buildTheGrid();
 }
 
+//////////////////////////////////////////////////////
+// check to see how many flashed sqrs exist
+//////////////////////////////////////////////////////
+function cpuFinishedFlashing() {
+  // Convert grid.children to an array and filter elements with the class "flash"
+  let flashedItems = Array.from(grid.children).filter((el) =>
+    el.classList.contains("flash")
+  );
+
+  return flashedItems;
+}
+
 // PREPARE THE NEXT LEVEL
 function prepareNextLevel() {
   // vars
@@ -242,6 +259,10 @@ async function flashSquare(squareId, duration) {
   const square = document.getElementById(squareId);
   square.classList.add("flash");
   await delay(duration);
+  // sets amount of flashedsqrs before clearing flash so we can control the 
+  // selection of the userarry till after the squares finished
+  amountOfFlashedSquares = cpuFinishedFlashing().length;
+  console.log(amountOfFlashedSquares);
 }
 // remove all flash classes after all squares were shown
 function removeFlash(squareId) {
