@@ -19,10 +19,10 @@ let lastRowStart = gridSize * gridSize - gridSize;
 let lastRowStop = gridSize * gridSize - 1;
 // audio vars
 // audio vars
-const gridPressSoundPath = "/memory-squares/public/audio/grid-press.wav";
-const gridFlashSoundPath = "/memory-squares/public/audio/grid-flash.wav";
-const levelPassAudio = new Audio("/memory-squares/public/audio/level-pass-audio.mp3");
-const gameoverAudio = new Audio("/memory-squares/public/audio/game-over-buzzer.wav");
+const gridPressSoundPath = "public/audio/grid-press.wav";
+const gridFlashSoundPath = "public/audio/grid-flash.wav";
+const levelPassAudio = new Audio("public/audio/level-pass-audio.mp3");
+const gameoverAudio = new Audio("public/audio/game-over-buzzer.wav");
 
 
 
