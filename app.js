@@ -82,12 +82,10 @@ grid.addEventListener("click", (e) => {
   document.getElementById(e.target.id)?.classList.add("flash");
   const gridPressSound = new Audio(gridPressSoundPath);
   gridPressSound.play();
-  console.log(userArray);
 });
 
 // SUBMIT BTN
 submitBtn.addEventListener("click", (e) => {
-  console.log(userArray, " <-- user array");
   pauseTimer();
   // more consistent way to compare the arrays
   const compareArrays = (a, b) => {
@@ -95,8 +93,6 @@ submitBtn.addEventListener("click", (e) => {
   };
 
   if (!compareArrays(userArray, cpuArray)) {
-    console.log("this was the userArray --> ", userArray);
-    console.log("this was the cpuArray --> ", cpuArray);
     h1.innerText = "YOU LOSE";
     h1.style.color = "red";
     // audio
@@ -104,7 +100,6 @@ submitBtn.addEventListener("click", (e) => {
     document
       .querySelectorAll(".square")
       .forEach((sqr) => sqr.classList.add("loser"));
-    console.log(squares, " these are the sqrs");
     resetBtn.classList.remove("hide");
     nextBtn.classList.add("hide");
   } else {
@@ -149,10 +144,6 @@ startBtn.addEventListener("click", async (e) => {
 // NEXT BTN
 nextBtn.addEventListener("click", (e) => {
   prepareNextLevel();
-
-  console.log(userArray);
-  console.log(" ");
-  console.log(cpuArray);
 
   grid.toggleAttribute("disabled");
 });
@@ -380,7 +371,6 @@ function addAllSquares() {
   });
   if (containsLastRowValue) return;
   cpuArray.push(randomNumFollowingGridPathRules().toString());
-  console.log("Updated cpuArray: --> ", cpuArray);
   return addAllSquares();
 }
 
