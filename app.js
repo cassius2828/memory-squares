@@ -18,10 +18,11 @@ let finalGrid = [];
 let lastRowStart = gridSize * gridSize - gridSize;
 let lastRowStop = gridSize * gridSize - 1;
 // audio vars
-const gridPressSoundPath = "/audio/grid-press.wav";
-const gridFlashSoundPath = "/audio/grid-flash.wav";
-const levelPassAudio = new Audio("/audio/level-pass-audio.mp3");
-const gameoverAudio = new Audio("/audio/game-over-buzzer.wav");
+const gridPressSoundPath = "public/audio/grid-press.wav";
+const gridFlashSoundPath = "public/audio/grid-flash.wav";
+const levelPassAudio = new Audio("public/audio/level-pass-audio.mp3");
+const gameoverAudio = new Audio("public/audio/game-over-buzzer.wav");
+
 // ending game
 let level = 1;
 
