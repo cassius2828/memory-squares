@@ -95,6 +95,7 @@ grid.addEventListener("click", (e) => {
 
 // SUBMIT BTN
 submitBtn.addEventListener("click", (e) => {
+  if (amountOfFlashedSquares !== cpuArray.length) return;
   pauseTimer();
   // more consistent way to compare the arrays
   const compareArrays = (a, b) => {
